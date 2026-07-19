@@ -152,8 +152,8 @@ if __name__ == "__main__":
     from data.dataset import LISS4CloudRemovalDataset
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    config_file = "C:/Users/AS/.gemini/antigravity/scratch/liss4_cloud_removal/config/config.yaml"
-    data_dir = "C:/Users/AS/.gemini/antigravity/scratch/liss4_cloud_removal/data/synthetic"
+    config_file = "C:/Users/AS/Desktop/liss4_cloud_removal/config/config.yaml"
+    data_dir = "C:/Users/AS/Desktop/liss4_cloud_removal/data/synthetic"
     
     dataset = LISS4CloudRemovalDataset(data_dir=data_dir)
     test_sample = dataset[0]
@@ -171,3 +171,4 @@ if __name__ == "__main__":
     print("Inference metrics:")
     for k, v in res['metrics'].items():
         print(f"  {k}: {v}")
+

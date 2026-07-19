@@ -248,6 +248,7 @@ class SyntheticSatelliteDataGenerator:
 
 if __name__ == "__main__":
     import sys
-    config_file = "C:/Users/AS/.gemini/antigravity/scratch/liss4_cloud_removal/config/config.yaml"
+    config_file = "C:/Users/AS/Desktop/liss4_cloud_removal/config/config.yaml"
     generator = SyntheticSatelliteDataGenerator(config_file)
     generator.run()
+

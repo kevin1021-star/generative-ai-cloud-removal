@@ -28,7 +28,7 @@ def train_pipeline(config_path):
     os.makedirs(config['paths']['output_dir'], exist_ok=True)
     
     # Initialize Dataset and DataLoader
-    data_dir = "C:/Users/AS/.gemini/antigravity/scratch/liss4_cloud_removal/data/synthetic"
+    data_dir = "C:/Users/AS/Desktop/liss4_cloud_removal/data/synthetic"
     dataset = LISS4CloudRemovalDataset(data_dir=data_dir)
     # Split into train/val
     train_size = int(0.8 * len(dataset))
@@ -206,5 +206,6 @@ def train_pipeline(config_path):
     print("Training orchestration complete! Checkpoints saved.")
 
 if __name__ == "__main__":
-    config_file = "C:/Users/AS/.gemini/antigravity/scratch/liss4_cloud_removal/config/config.yaml"
+    config_file = "C:/Users/AS/Desktop/liss4_cloud_removal/config/config.yaml"
     train_pipeline(config_file)
+

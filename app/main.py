@@ -107,8 +107,8 @@ st.markdown("""
 """, unsafe_html=True)
 
 # Define project files directories
-config_file = "C:/Users/AS/.gemini/antigravity/scratch/liss4_cloud_removal/config/config.yaml"
-data_dir = "C:/Users/AS/.gemini/antigravity/scratch/liss4_cloud_removal/data/synthetic"
+config_file = "C:/Users/AS/Desktop/liss4_cloud_removal/config/config.yaml"
+data_dir = "C:/Users/AS/Desktop/liss4_cloud_removal/data/synthetic"
 
 # Setup device
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -302,3 +302,4 @@ with col9:
                 <div class="metric-value">{results['metrics']['albedo_mean']:.3f}</div>
             </div>
         """, unsafe_html=True)
+

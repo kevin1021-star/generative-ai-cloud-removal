@@ -47,5 +47,6 @@ physics:
     physics_albedo: 0.3
 
 paths:
-  checkpoint_dir: "C:/Users/AS/.gemini/antigravity/scratch/liss4_cloud_removal/checkpoints"
-  output_dir: "C:/Users/AS/.gemini/antigravity/scratch/liss4_cloud_removal/outputs"
+  checkpoint_dir: "C:/Users/AS/Desktop/liss4_cloud_removal/checkpoints"
+  output_dir: "C:/Users/AS/Desktop/liss4_cloud_removal/outputs"
+
