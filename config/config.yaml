@@ -1,0 +1,51 @@
+# Hyperparameters and Configuration for LISS-IV Cloud Removal
+
+data:
+  image_size: 128            # Spatial dimensions of patches (128x128 pixels)
+  liss4_bands: 3             # Green, Red, NIR
+  s2_bands: 6                # Blue, Green, Red, NIR, SWIR1, SWIR2
+  s1_bands: 2                # VV, VH (SAR)
+  sequence_length: 5         # Number of historical observations for TPT
+  synthetic_samples: 100     # Number of synthetic pairs for training/test
+
+models:
+  cloud_detector:
+    in_channels: 3           # LISS-IV Green, Red, NIR
+    num_classes: 2           # Background vs Cloud/Shadow
+    lr: 0.001
+  
+  tpt:
+    input_dim: 3             # Green, Red, NIR values
+    embed_dim: 64
+    num_layers: 2
+    num_heads: 4
+    lr: 0.0005
+
+  sar_fusion:
+    sar_channels: 2          # VV, VH
+    optical_channels: 3
+    fusion_dim: 64
+    lr: 0.0005
+
+  diffusion:
+    num_steps: 10            # Number of sampling steps (fast denoising with DPM-Solver)
+    beta_start: 0.0001
+    beta_end: 0.02
+    lr: 0.0002
+    physics_guidance_scale: 0.1 # Guidance strength for in-loop physics loss
+
+physics:
+  ndvi:
+    min_val: -0.1
+    max_val: 0.9
+  albedo:
+    min_val: 0.0
+    max_val: 0.6
+  loss_weights:
+    reconstruction: 1.0
+    physics_ndvi: 0.5
+    physics_albedo: 0.3
+
+paths:
+  checkpoint_dir: "C:/Users/AS/.gemini/antigravity/scratch/liss4_cloud_removal/checkpoints"
+  output_dir: "C:/Users/AS/.gemini/antigravity/scratch/liss4_cloud_removal/outputs"
