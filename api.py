@@ -160,7 +160,10 @@ def compute_comparative_architectures(reconstructed_rgb):
     Simulates reconstruction outputs of comparative Generative AI architectures 
     (Traditional GAN vs Temporal Phenology Transformer vs our PG-Diffusion model).
     """
-    # reconstructed_rgb shape: [128, 128, 3] with values [0, 255]
+    # Convert float32 [0.0, 1.0] to uint8 [0, 255] to prevent Pillow fromarray type errors
+    if reconstructed_rgb.dtype != np.uint8:
+        reconstructed_rgb = (np.clip(reconstructed_rgb, 0.0, 1.0) * 255).astype(np.uint8)
+        
     h, w, c = reconstructed_rgb.shape
     
     # 1. TPT Transformer Baseline (Tends to be slightly blocky due to attention patch sizes)
