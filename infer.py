@@ -106,8 +106,11 @@ def run_inference_pipeline(sample, cloud_detector, tpt, sar_fusion, diffusion, p
         history_mean = history.mean(dim=1)
         reconstructed = 0.15 * reconstructed + 0.85 * history_mean
         
+        # Convert soft cloud mask to binary mask to prevent translucent cloud edge bleeding
+        binary_mask = (detected_mask > 0.05).float()
+        
         # Merge reconstructed parts with the original clear pixels
-        final_output = clear_pixels + reconstructed * detected_mask
+        final_output = cloudy * (1.0 - binary_mask) + reconstructed * binary_mask
         final_output = torch.clamp(final_output, 0.0, 1.0)
         
         # 7. Post-Hoc Physics Validation Gate
