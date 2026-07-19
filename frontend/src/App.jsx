@@ -183,6 +183,56 @@ export default function App() {
   // Map state coordinates
   const [coords, setCoords]               = useState({ lat: 26.1445, lon: 91.7362 })
 
+  const fileInputRef = useRef(null)
+  const [dragActive, setDragActive] = useState(false)
+
+  const handleDrag = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true)
+    } else if (e.type === "dragleave") {
+      setDragActive(false)
+    }
+  }
+
+  const handleDrop = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setDragActive(false)
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleFileUpload(e.dataTransfer.files[0])
+    }
+  }
+
+  const handleFileChange = (e) => {
+    if (e.target.files && e.target.files.length > 0) {
+      handleFileUpload(e.target.files[0])
+    }
+  }
+
+  const handleFileUpload = async (file) => {
+    setLoading(true)
+    setResults(null)
+    const formData = new FormData()
+    formData.append('file', file)
+
+    try {
+      const res = await axios.post('http://localhost:8000/api/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+      setResults(res.data)
+      setCoords({ lat: 26.1445, lon: 91.7362 }) // fallback center
+    } catch (err) {
+      alert('Upload failed. Ensure backend FastAPI server is running on port 8000.')
+      console.error(err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const scrollRef = useRef(null)
   const { scrollYProgress } = useScroll({ container: scrollRef })
   const smooth = useSpring(scrollYProgress, { stiffness: 45, damping: 16 })
@@ -416,12 +466,26 @@ export default function App() {
                     transition={{ duration:0.3 }}
                   >
                     <label className="field-label">LISS-IV HDF5 / Multi-spectral Raster</label>
-                    <div className="drop-zone">
-                      <UploadCloud size={24} style={{ opacity:0.2, margin:'0 auto 0.8rem', display:'block' }}/>
+                    <div 
+                      className={`drop-zone ${dragActive ? 'drag-active' : ''}`}
+                      onDragEnter={handleDrag}
+                      onDragLeave={handleDrag}
+                      onDragOver={handleDrag}
+                      onDrop={handleDrop}
+                      onClick={() => fileInputRef.current.click()}
+                    >
+                      <UploadCloud size={24} style={{ opacity:0.2, margin:'0 auto 0.8rem', display:'block', color: dragActive ? '#FF6600' : '#fff' }}/>
                       <p style={{ fontFamily:'Inter',fontWeight:200,fontSize:'0.85rem',color:'rgba(255,255,255,0.2)' }}>
-                        Drop LISS-IV bands (.tif / .img) here or click to browse
+                        {dragActive ? "Drop your file here..." : "Drop LISS-IV bands (.tif / .img / .png / .jpg) here or click to browse"}
                       </p>
                     </div>
+                    <input 
+                      type="file" 
+                      ref={fileInputRef} 
+                      onChange={handleFileChange} 
+                      style={{ display: 'none' }} 
+                      accept="image/*" 
+                    />
                   </motion.div>
                 )}
               </AnimatePresence>
