@@ -82,6 +82,29 @@ def image_to_base64(img_array):
     img_str = base64.b64encode(buffered.getvalue()).decode("utf-8")
     return f"data:image/jpeg;base64,{img_str}"
 
+def tensor_to_natural_and_fcc(tensor):
+    """Converts multi-spectral LISS-IV tensor to simulated Natural color and standard FCC."""
+    if hasattr(tensor, "detach"):
+        arr = tensor.detach().cpu().numpy()
+    else:
+        arr = np.array(tensor)
+    
+    arr = np.clip(arr, 0.0, 1.0)
+    
+    # LISS-IV Bands are: 0 = Green, 1 = Red, 2 = NIR
+    green = (arr[0] * 255.0).astype(np.uint8)
+    red = (arr[1] * 255.0).astype(np.uint8)
+    nir = (arr[2] * 255.0).astype(np.uint8)
+    
+    # 1. FCC (NIR -> Red, Red -> Green, Green -> Blue)
+    fcc_rgb = np.stack([nir, red, green], axis=-1)
+    
+    # 2. Simulated Natural RGB (Red -> Red, Green -> Green, Blue simulated from Green/Red spectral overlaps)
+    blue = np.clip(green * 0.7 + red * 0.15, 0, 255).astype(np.uint8)
+    natural_rgb = np.stack([red, green, blue], axis=-1)
+    
+    return image_to_base64(natural_rgb), image_to_base64(fcc_rgb)
+
 def extract_geotiff_metadata(file_path):
     """
     Attempts to load the uploaded raster using Rasterio to parse CRS, bounds,
@@ -304,8 +327,8 @@ def process_live_location(req: LiveLocationRequest):
         if os.environ.get("RENDER") or os.environ.get("MOCK_INFERENCE") == "true":
             recon_tensor = sample['gt']
             sar_tensor = sample['sar']
-            cloudy_rgb = tensor_to_rgb(sample['cloudy'], band_order=(2, 1, 0))
-            recon_rgb = tensor_to_rgb(recon_tensor, band_order=(2, 1, 0))
+            cloudy_nat, cloudy_fcc = tensor_to_natural_and_fcc(sample['cloudy'])
+            recon_nat, recon_fcc = tensor_to_natural_and_fcc(recon_tensor)
             metrics = {
                 "psnr": 28.74,
                 "ssim": 0.9125,
@@ -326,8 +349,8 @@ def process_live_location(req: LiveLocationRequest):
             )
             recon_tensor = results['outputs']['final_output']
             sar_tensor = results['inputs']['sar']
-            cloudy_rgb = tensor_to_rgb(results['inputs']['cloudy'], band_order=(2, 1, 0))
-            recon_rgb = tensor_to_rgb(recon_tensor, band_order=(2, 1, 0))
+            cloudy_nat, cloudy_fcc = tensor_to_natural_and_fcc(results['inputs']['cloudy'])
+            recon_nat, recon_fcc = tensor_to_natural_and_fcc(recon_tensor)
             metrics = results['metrics']
         
         # 4. Run downstream crops/traffic/infrastructure analysis
@@ -337,9 +360,10 @@ def process_live_location(req: LiveLocationRequest):
         )
  
         # 5. Generate comparative architecture outputs
+        recon_rgb = tensor_to_rgb(recon_tensor, band_order=(2, 1, 0))
         comparisons = compute_comparative_architectures(recon_rgb)
         
-        high_res_ref_array = np.array(sample['high_res_ref'])
+        ref_nat, ref_fcc = tensor_to_natural_and_fcc(sample['gt'])
 
         return {
             "status": "success",
@@ -360,9 +384,12 @@ def process_live_location(req: LiveLocationRequest):
                 "dimensions": "128x128 pixels (Analysis Footprint)"
             },
             "images": {
-                "high_res_ref": image_to_base64(high_res_ref_array),
-                "cloudy": image_to_base64(cloudy_rgb),
-                "reconstructed": image_to_base64(recon_rgb),
+                "high_res_ref": ref_nat,
+                "high_res_ref_fcc": ref_fcc,
+                "cloudy_natural": cloudy_nat,
+                "cloudy_fcc": cloudy_fcc,
+                "reconstructed_natural": recon_nat,
+                "reconstructed_fcc": recon_fcc,
                 "ndvi_map": analytics["heatmaps"]["ndvi"],
                 "ndwi_map": analytics["heatmaps"]["ndwi"]
             }
@@ -395,9 +422,9 @@ async def upload_satellite_image(file: UploadFile = File(...)):
         if os.environ.get("RENDER") or os.environ.get("MOCK_INFERENCE") == "true":
             recon_tensor = sample['gt']
             sar_tensor = sample['sar']
-            cloudy_rgb = tensor_to_rgb(sample['cloudy'], band_order=(2, 1, 0))
-            recon_rgb = tensor_to_rgb(recon_tensor, band_order=(2, 1, 0))
-            high_res_ref_array = tensor_to_rgb(sample['gt'], band_order=(2, 1, 0))
+            cloudy_nat, cloudy_fcc = tensor_to_natural_and_fcc(sample['cloudy'])
+            recon_nat, recon_fcc = tensor_to_natural_and_fcc(recon_tensor)
+            ref_nat, ref_fcc = tensor_to_natural_and_fcc(sample['gt'])
             metrics = {
                 "psnr": 28.74,
                 "ssim": 0.9125,
@@ -418,9 +445,9 @@ async def upload_satellite_image(file: UploadFile = File(...)):
             )
             recon_tensor = results['outputs']['final_output']
             sar_tensor = results['inputs']['sar']
-            cloudy_rgb = tensor_to_rgb(results['inputs']['cloudy'], band_order=(2, 1, 0))
-            recon_rgb = tensor_to_rgb(recon_tensor, band_order=(2, 1, 0))
-            high_res_ref_array = tensor_to_rgb(results['outputs']['gt'], band_order=(2, 1, 0))
+            cloudy_nat, cloudy_fcc = tensor_to_natural_and_fcc(results['inputs']['cloudy'])
+            recon_nat, recon_fcc = tensor_to_natural_and_fcc(recon_tensor)
+            ref_nat, ref_fcc = tensor_to_natural_and_fcc(results['outputs']['gt'])
             metrics = results['metrics']
         
         # Clean up temp file
@@ -434,6 +461,7 @@ async def upload_satellite_image(file: UploadFile = File(...)):
         )
         
         # Generate comparative architecture outputs
+        recon_rgb = tensor_to_rgb(recon_tensor, band_order=(2, 1, 0))
         comparisons = compute_comparative_architectures(recon_rgb)
 
         # Custom raster file climatic baseline (sandbox mock)
@@ -453,9 +481,12 @@ async def upload_satellite_image(file: UploadFile = File(...)):
             "comparisons": comparisons,
             "gis": gis_metadata,
             "images": {
-                "high_res_ref": image_to_base64(high_res_ref_array),
-                "cloudy": image_to_base64(cloudy_rgb),
-                "reconstructed": image_to_base64(recon_rgb),
+                "high_res_ref": ref_nat,
+                "high_res_ref_fcc": ref_fcc,
+                "cloudy_natural": cloudy_nat,
+                "cloudy_fcc": cloudy_fcc,
+                "reconstructed_natural": recon_nat,
+                "reconstructed_fcc": recon_fcc,
                 "ndvi_map": analytics["heatmaps"]["ndvi"],
                 "ndwi_map": analytics["heatmaps"]["ndwi"]
             }
