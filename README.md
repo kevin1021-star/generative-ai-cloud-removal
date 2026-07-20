@@ -1,4 +1,16 @@
+---
+title: LISS-IV Cloud Removal
+emoji: 🛰️
+colorFrom: indigo
+colorTo: indigo
+sdk: gradio
+sdk_version: 4.36.1
+app_file: app.py
+pinned: false
+---
+
 # 🛰️ PG-SMDNet: Physics-Guided State Reconstruction and Cloud Removal for LISS-IV Satellite Imagery
+
 
 Alter Ego's state-of-the-art, hackathon-winning framework for automated real-time cloud removal, surface reconstruction, and downstream analytics (NDVI vegetation tracking, NDWI water body delineation, and Sentinel-1 SAR structure maps) in ISRO LISS-IV multi-spectral imagery.
 
@@ -64,11 +76,12 @@ python -m streamlit run app.py
 
 ---
 
-## 🌐 Deploy Live to Hugging Face Spaces (Free Hosting)
-You can deploy this full-stack application live on **Hugging Face Spaces** for free in a single Docker container:
+## 🌐 Deploy Live to Hugging Face Spaces (100% Free Hosting)
+You can deploy this full-stack application live on **Hugging Face Spaces** for free using the **Gradio** SDK:
 1. Create a free account at **[huggingface.co](https://huggingface.co/)**.
 2. Go to **Spaces** and click **"Create new Space"**.
-3. Choose **Docker** as the SDK (with the **Blank** template) and select **Public**.
-4. Clone or push this repository directly to the Hugging Face Space remote Git repository.
-5. Hugging Face will automatically read the root **`Dockerfile`**, compile the React frontend, host the FastAPI backend on port `7860`, and generate a permanent, public HTTPS link that anyone can open in their browser!
+3. Choose **Gradio** as the SDK (with the **Blank** template) and select **Public**.
+4. Clone or push this repository directly to the Hugging Face Space remote Git repository (or upload the files directly).
+5. Since we have pre-compiled the React assets inside the `frontend/dist` directory, Hugging Face will automatically read the root **`app.py`**, start the FastAPI backend, host the frontend on port `7860`, and generate a permanent, public HTTPS link that anyone can open in their browser!
+
 

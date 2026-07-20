@@ -556,3 +556,13 @@ st.markdown("""
     Built with PyTorch + Streamlit | Synthetic Data Demo
 </div>
 """, unsafe_allow_html=True)
+
+
+if __name__ == "__main__":
+    # Entrypoint to run the FastAPI app directly on Hugging Face Gradio Spaces (port 7860)
+    import uvicorn
+    from api import app as fastapi_app
+    port = int(os.environ.get("PORT", 7860))
+    print(f"Starting production FastAPI server on port {port}...")
+    uvicorn.run(fastapi_app, host="0.0.0.0", port=port)
+
