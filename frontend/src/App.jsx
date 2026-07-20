@@ -647,7 +647,7 @@ export default function App() {
                           <p style={{ fontFamily:'Inter',fontSize:'0.7rem',color:'rgba(255,255,255,0.2)' }}>Raw LISS-IV Band</p>
                         </div>
                         <div className="img-card">
-                          <img src={bandMode === 'natural' ? results.images.cloudy_natural : results.images.cloudy_fcc} alt="Cloudy" style={{ width:'100%',display:'block' }}/>
+                          <img src={bandMode === 'natural' ? (results.images.cloudy_natural || results.images.cloudy) : (results.images.cloudy_fcc || results.images.cloudy)} alt="Cloudy" style={{ width:'100%',display:'block' }}/>
                         </div>
                       </div>
                       <div>
@@ -656,7 +656,7 @@ export default function App() {
                           <p style={{ fontFamily:'Inter',fontSize:'0.7rem',color:'rgba(255,255,255,0.2)' }}>PG-SMDNet State</p>
                         </div>
                         <div className="img-card img-card-accent">
-                          <img src={bandMode === 'natural' ? results.images.reconstructed_natural : results.images.reconstructed_fcc} alt="Reconstructed" style={{ width:'100%',display:'block' }}/>
+                          <img src={bandMode === 'natural' ? (results.images.reconstructed_natural || results.images.reconstructed) : (results.images.reconstructed_fcc || results.images.reconstructed)} alt="Reconstructed" style={{ width:'100%',display:'block' }}/>
                         </div>
                       </div>
                     </>
@@ -705,7 +705,7 @@ export default function App() {
                           <p style={{ fontFamily:'Inter',fontSize:'0.7rem',color:'rgba(255,255,255,0.2)' }}>Raw LISS-IV Band</p>
                         </div>
                         <div className="img-card">
-                          <img src={results.images.cloudy_natural} alt="Cloudy" style={{ width:'100%',display:'block' }}/>
+                          <img src={results.images.cloudy_natural || results.images.cloudy} alt="Cloudy" style={{ width:'100%',display:'block' }}/>
                         </div>
                       </div>
                     </>
@@ -719,7 +719,7 @@ export default function App() {
                           <p style={{ fontFamily:'Inter',fontSize:'0.7rem',color:'rgba(255,255,255,0.2)' }}>Visible RGB</p>
                         </div>
                         <div className="img-card">
-                          <img src={bandMode === 'natural' ? results.images.reconstructed_natural : results.images.reconstructed_fcc} alt="Cloud-Free" style={{ width:'100%',display:'block' }}/>
+                          <img src={bandMode === 'natural' ? (results.images.reconstructed_natural || results.images.reconstructed) : (results.images.reconstructed_fcc || results.images.reconstructed)} alt="Cloud-Free" style={{ width:'100%',display:'block' }}/>
                         </div>
                       </div>
                       <div>
@@ -742,7 +742,7 @@ export default function App() {
                           <p style={{ fontFamily:'Inter',fontSize:'0.7rem',color:'rgba(255,255,255,0.2)' }}>Visible RGB</p>
                         </div>
                         <div className="img-card">
-                          <img src={bandMode === 'natural' ? results.images.reconstructed_natural : results.images.reconstructed_fcc} alt="Cloud-Free" style={{ width:'100%',display:'block' }}/>
+                          <img src={bandMode === 'natural' ? (results.images.reconstructed_natural || results.images.reconstructed) : (results.images.reconstructed_fcc || results.images.reconstructed)} alt="Cloud-Free" style={{ width:'100%',display:'block' }}/>
                         </div>
                       </div>
                       <div>
@@ -765,7 +765,7 @@ export default function App() {
                           <p style={{ fontFamily:'Inter',fontSize:'0.7rem',color:'rgba(255,255,255,0.2)' }}>Visible RGB</p>
                         </div>
                         <div className="img-card">
-                          <img src={bandMode === 'natural' ? results.images.reconstructed_natural : results.images.reconstructed_fcc} alt="Reconstructed" style={{ width:'100%',display:'block' }}/>
+                          <img src={bandMode === 'natural' ? (results.images.reconstructed_natural || results.images.reconstructed) : (results.images.reconstructed_fcc || results.images.reconstructed)} alt="Reconstructed" style={{ width:'100%',display:'block' }}/>
                         </div>
                       </div>
                       <div>
@@ -774,7 +774,7 @@ export default function App() {
                           <p style={{ fontFamily:'Inter',fontSize:'0.7rem',color:'rgba(255,255,255,0.2)' }}>Sentinel-1 structural map</p>
                         </div>
                         <div className="img-card sar-card">
-                          <img src={bandMode === 'natural' ? results.images.high_res_ref : results.images.high_res_ref_fcc} alt="High Res Reference" style={{ width:'100%',display:'block', filter: 'grayscale(100%) contrast(150%)' }}/>
+                          <img src={bandMode === 'natural' ? (results.images.high_res_ref || results.images.reconstructed) : (results.images.high_res_ref_fcc || results.images.reconstructed)} alt="High Res Reference" style={{ width:'100%',display:'block', filter: 'grayscale(100%) contrast(150%)' }}/>
                         </div>
                       </div>
                     </>

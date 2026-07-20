@@ -1,0 +1,95 @@
+======================================================================
+🛰️ PG-SMDNet Technical Appendix: Backend Coding Logic & Tensor Pipeline
+======================================================================
+
+This file outlines the mathematical processing steps, tensor shapes, and 
+backend architectural plans used in the multi-spectral cloud removal system.
+You can open this file in Notepad or copy it directly into Microsoft Word.
+
+---
+1. SYSTEM TENSOR FLOW CHART (ASCII SCHEMATIC)
+---
+
+[ LISS-IV Optical Input ]     [ Sentinel-1 SAR Input ]     [ Temporal Sequence ]
+   (Shape: 3, 128, 128)          (Shape: 2, 64, 64)        (Shape: 5, 3, 128, 128)
+           │                             │                           │
+           ▼                             ▼                           ▼
+[ U-Net Segmentation Mask ]      [ Bilinear Upsample ]       [ Phenology Transformer ]
+   (Shape: 1, 128, 128)          (Shape: 2, 128, 128)        (Shape: 3, 128, 128)
+           │                             │                           │
+           └─────────────────────┬───────┴───────────────────────────┘
+                                 ▼
+                     [ Channel Concatenation ]
+                     (Fuses context matrices)
+                                 │
+                                 ▼
+                   [ Condition Tensor (C) ]
+                     (Shape: 6, 128, 128)
+                                 │
+                                 ▼
+                   [ DDIM Denoising Loop ] <─── [ Gaussian Noise ]
+                     (Runs for 50 steps)        (Shape: 3, 128, 128)
+                                 │
+                                 ▼
+                   [ Reconstructed Output ]
+                     (Shape: 3, 128, 128)
+                                 │
+                                 ▼
+                   [ Physics Validation Gate ]
+                     (Runs NDVI & Albedo checks)
+                                 │
+                                 ▼
+                   [ Validated Cloud-Free Output ]
+                     (Shape: 3, 128, 128)
+
+---
+2. INCOMING DATA MODALITY SHAPES
+---
+* LISS-IV Optical Input (X_opt): Shape [3, 128, 128]
+  - Channel 0 = Green Band (B2)
+  - Channel 1 = Red Band (B3)
+  - Channel 2 = Near-Infrared Band (B4)
+
+* Sentinel-1 SAR Radar Input (X_sar): Shape [2, 64, 64]
+  - Channel 0 = VV Coherence backscatter
+  - Channel 1 = VH Coherence backscatter
+
+* Temporal History Reference Sequence (X_temp): Shape [5, 3, 128, 128]
+  - Represents 5 historical timesteps of LISS-IV bands for crop-rotation tracking.
+
+---
+3. FUSION & RESHAPING LOGIC
+---
+To feed the conditional diffusion network, all spatial matrices are aligned 
+to the optical grid (128x128 pixels):
+
+1. Bilinear Upsampling of SAR:
+   SAR [2, 64, 64] -> Upsampled to [2, 128, 128]
+
+2. U-Net Cloud Segmentation:
+   Optical [3, 128, 128] -> Segmented to [1, 128, 128] (0 = Clear, 1 = Cloud)
+
+3. Concatenation:
+   We stack the cloud mask, upsampled SAR, and phenology predictions along 
+   the channel dimension to construct the conditioning tensor C:
+   C = Concat(Mask, SAR_up, TPT_prediction) -> Shape: [6, 128, 128]
+
+---
+4. PHYSICS VALIDATION & GRADIENT PROJECTIONS
+---
+If the reconstructed tensor (X_recon) violates physical index limits, 
+the validation gate applies correction projections:
+
+1. NDVI Limit Checking:
+   NDVI = (NIR - Red) / (NIR + Red + epsilon)
+   NDVI = (X_recon[2] - X_recon[1]) / (X_recon[2] + X_recon[1] + 1e-6)
+   - Limit constraint: -0.2 <= NDVI <= 0.92
+
+2. Surface Albedo Limit Checking:
+   Albedo = 0.356 * Green + 0.397 * Red + 0.357 * NIR
+   Albedo = 0.356 * X_recon[0] + 0.397 * X_recon[1] + 0.357 * X_recon[2]
+   - Limit constraint: 0.03 <= Albedo <= 0.45
+
+======================================================================
+🛰️ Alter Ego - Bharatiya Antariksh Hackathon 2026 Submission
+======================================================================
