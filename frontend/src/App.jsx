@@ -174,6 +174,8 @@ function GeospatialMap({ lat, lon, onMapClick }) {
 ────────────────────────────────────────────────────────────────────────── */
 
 export default function App() {
+  const API_URL = import.meta.env.VITE_API_URL || (window.location.hostname === 'localhost' && window.location.port === '5173' ? 'http://localhost:8000' : window.location.origin)
+
   const [activeTab, setActiveTab]         = useState('live')
   const [loading, setLoading]             = useState(false)
   const [results, setResults]             = useState(null)
@@ -218,7 +220,7 @@ export default function App() {
     formData.append('file', file)
 
     try {
-      const res = await axios.post('http://localhost:8000/api/upload', formData, {
+      const res = await axios.post(`${API_URL}/api/upload`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -254,7 +256,7 @@ export default function App() {
     setCoords({ lat: latVal, lon: lonVal })
 
     try {
-      const res = await axios.post('http://localhost:8000/api/live', {
+      const res = await axios.post(`${API_URL}/api/live`, {
         lat: latVal,
         lon: lonVal,
         add_clouds: true
