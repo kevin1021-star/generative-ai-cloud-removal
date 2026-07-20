@@ -1,87 +1,51 @@
----
-title: LISS-IV Cloud Removal
-emoji: 🛰️
-colorFrom: indigo
-colorTo: indigo
-sdk: gradio
-sdk_version: 4.36.1
-app_file: app.py
-pinned: false
----
+# 🛰️ PG-SMDNet: Physics-Guided Cloud Removal & State Reconstruction
 
-# 🛰️ PG-SMDNet: Physics-Guided State Reconstruction and Cloud Removal for LISS-IV Satellite Imagery
+Alter Ego's state-of-the-art framework for automated real-time cloud removal, surface reconstruction, and multi-spectral analytics (NDVI vegetation tracking, NDWI water body delineation, and Sentinel-1 SAR structure maps) in ISRO LISS-IV satellite imagery.
 
-
-Alter Ego's state-of-the-art, hackathon-winning framework for automated real-time cloud removal, surface reconstruction, and downstream analytics (NDVI vegetation tracking, NDWI water body delineation, and Sentinel-1 SAR structure maps) in ISRO LISS-IV multi-spectral imagery.
+Built for the **Bharatiya Antariksh Hackathon 2026** (ISRO / Bhoonidhi).
 
 ---
 
-## 🚀 Ultra-Premium Presentation Stack (React + FastAPI) — *Primary Presentation*
-
-Our primary user interface is an ultra-premium, full-stack React dashboard featuring interactive Leaflet maps, live OpenStreetMap Nominatim geocoding, real-time Open-Meteo & SRTM DEM elevation queries, and side-by-side Generative AI model comparisons.
-
-### ⚡ One-Click Startup Script (Easiest)
-We have provided startup scripts that install requirements, launch the FastAPI and React servers, and automatically open the React application directly in your browser:
-- **Windows**: Double-click **`run_project.bat`** (or run `./run_project.bat` in your terminal).
-- **macOS / Linux**: Run **`./run_project.sh`** in your terminal.
+## 🌐 Live Deployments
+* **Interactive Frontend (Vercel):** [https://generative-ai-cloud-removal-4jua.vercel.app](https://generative-ai-cloud-removal-4jua.vercel.app)
+* **API Backend (Render):** [https://generative-ai-cloud-removal.onrender.com](https://generative-ai-cloud-removal.onrender.com)
 
 ---
 
-### Manual Launch (Alternative)
+## 🎨 Core Architecture
+Our framework bypasses traditional pixel inpainting (GANs) which generate unscientific artifacts. Instead, it learns atmospheric optics and physical constraints to reconstruct authentic ground-truth spectra:
 
-### 1. Start the FastAPI AI Backend
-The PyTorch models are loaded in memory via an asynchronous FastAPI REST server.
-```bash
-# Install dependencies
-pip install -r requirements.txt
+* **Sentinel-1 SAR Coherence Fusion:** Fuses microwave radar backscatter (VV/VH) which passes directly through cloud moisture to capture physical structures under the clouds.
+* **Temporal Phenology Transformer (TPT):** Learns historical seasonal crop cycles from previous cloud-free images to predict current vegetation states.
+* **Physics Validation Gate:** An in-loop validation module that enforces physical constants (Albedo bounds & NDVI vegetation indexes) to prevent the AI from generating unscientific data.
 
-# Run the API
-python api.py
+---
+
+## 📊 Interactive Features
+* **Leaflet Geocoding Portal:** Enter any location (e.g. `Guwahati, India`) to fetch live Open-Meteo climate records and SRTM DEM elevation data.
+* **Band-Composite Toggles:** Switch between **Simulated Natural Color (RGB)** and **Standard False Color Composite (FCC: NIR-Red-Green)** dynamically.
+* **Spectral Reflectance Curves:** Click any pixel to plot its reflectance signature (Green, Red, NIR bands) against reference crop curves.
+* **Downstream Analytics:** Watch the app automatically calculate crop health distributions and map obscured urban infrastructure.
+
+---
+
+## 🚀 Local Quick Start (1-Click)
+
+The repository comes with one-click startup scripts that boot both servers and open your default browser automatically:
+
+### For Windows:
+Double-click the **`run_project.bat`** file in the root folder, or run in PowerShell:
+```powershell
+.\run_project.bat
 ```
-*Backend runs on: `http://localhost:8000`*
 
-### 2. Start the React Frontend
-Our presentation page featuring Framer Motion micro-animations, interactive maps, and a 3D zero-gravity floating astronaut with cursor-responsive tracking.
+### For macOS / Linux:
+Run in Terminal:
 ```bash
-# Navigate to the frontend directory
-cd frontend
-
-# Install Node modules (if not already done)
-npm install
-
-# Start the Vite development server
-npm run dev
+chmod +x run_project.sh
+./run_project.sh
 ```
-*Frontend runs on: `http://localhost:5173`*
 
 ---
 
-## 📊 Fallback Sandbox Interface (Streamlit) — *Alternative Presentation*
-
-If you wish to view the legacy single-page Streamlit mockup (which is what opens by default when running `app.py`), you can run the following fallback command from the project root:
-
-```bash
-python -m streamlit run app.py
-```
-*Streamlit dashboard runs on: `http://localhost:8501`*
-
----
-
-## 🎨 Key Features & Architecture
-- **Multi-Modal Diffusion Model**: Blends Sentinel-1 SAR coherence, Sentinel-2 SWIR/optical imagery, and 5-frame LISS-IV temporal reference sequences.
-- **Physics Validation Gate**: Implements in-loop differentiable loss functions matching physical constants (Albedo, NDVI indexes, and SAR spatial gradients).
-- **Interactive Nominatim Geocoding**: Type in any address (like "Guwahati" or "New Delhi"), geocode it, and retrieve live contextual climate/elevation context.
-- **Dynamic Leaflet Layering**: Drop pins on actual satellite locations to run inference in real-time.
-- **Comparative AI Tab**: Directly compares our **PG-SMDNet** model outputs and metrics against **Traditional GANs (pix2pix)** and **TPT Transformers** side-by-side.
-
----
-
-## 🌐 Deploy Live to Hugging Face Spaces (100% Free Hosting)
-You can deploy this full-stack application live on **Hugging Face Spaces** for free using the **Gradio** SDK:
-1. Create a free account at **[huggingface.co](https://huggingface.co/)**.
-2. Go to **Spaces** and click **"Create new Space"**.
-3. Choose **Gradio** as the SDK (with the **Blank** template) and select **Public**.
-4. Clone or push this repository directly to the Hugging Face Space remote Git repository (or upload the files directly).
-5. Since we have pre-compiled the React assets inside the `frontend/dist` directory, Hugging Face will automatically read the root **`app.py`**, start the FastAPI backend, host the frontend on port `7860`, and generate a permanent, public HTTPS link that anyone can open in their browser!
-
-
+*Developed by Team Alter Ego | Python 3.10 · PyTorch · FastAPI · React.js · Leaflet*
