@@ -61,3 +61,14 @@ python -m streamlit run app.py
 - **Interactive Nominatim Geocoding**: Type in any address (like "Guwahati" or "New Delhi"), geocode it, and retrieve live contextual climate/elevation context.
 - **Dynamic Leaflet Layering**: Drop pins on actual satellite locations to run inference in real-time.
 - **Comparative AI Tab**: Directly compares our **PG-SMDNet** model outputs and metrics against **Traditional GANs (pix2pix)** and **TPT Transformers** side-by-side.
+
+---
+
+## 🌐 Deploy Live to Hugging Face Spaces (Free Hosting)
+You can deploy this full-stack application live on **Hugging Face Spaces** for free in a single Docker container:
+1. Create a free account at **[huggingface.co](https://huggingface.co/)**.
+2. Go to **Spaces** and click **"Create new Space"**.
+3. Choose **Docker** as the SDK (with the **Blank** template) and select **Public**.
+4. Clone or push this repository directly to the Hugging Face Space remote Git repository.
+5. Hugging Face will automatically read the root **`Dockerfile`**, compile the React frontend, host the FastAPI backend on port `7860`, and generate a permanent, public HTTPS link that anyone can open in their browser!
+
