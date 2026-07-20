@@ -322,7 +322,7 @@ export default function App() {
           <div className="divider-v" />
           <span className="mono xs dimmer">BHOONIDHI · LISS-IV</span>
         </div>
-        <div className="nav-badge">BAH 2026</div>
+        <div className="nav-badge">AS</div>
       </nav>
 
       {/* Flash transition */}
@@ -345,11 +345,11 @@ export default function App() {
               transition={{ duration:2, delay:0.6, ease:[0.16,1,0.3,1] }}
             >
               <p className="mono xs dimmer" style={{ letterSpacing:'6px', marginBottom:'1.4rem' }}>
-                Bharatiya Antariksh Hackathon 2026
+                Space Technology Research
               </p>
 
               <div className="shimmer-wrap">
-                <h1 className="hero-title">Alter Ego</h1>
+                <h1 className="hero-title">AS</h1>
                 <motion.div
                   className="shimmer-bar"
                   initial={{ left:'-60%' }}
@@ -959,7 +959,7 @@ export default function App() {
 
           <div className="team-credit">
             <span className="mono xs dimmer">Developed by</span>
-            <span className="mono xs" style={{ color:'rgba(255,255,255,0.5)', marginLeft:'0.5rem' }}>Team Alter Ego</span>
+            <span className="mono xs" style={{ color:'rgba(255,255,255,0.5)', marginLeft:'0.5rem' }}>AS</span>
           </div>
         </section>
 
