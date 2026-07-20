@@ -8,6 +8,15 @@ Alter Ego's state-of-the-art, hackathon-winning framework for automated real-tim
 
 Our primary user interface is an ultra-premium, full-stack React dashboard featuring interactive Leaflet maps, live OpenStreetMap Nominatim geocoding, real-time Open-Meteo & SRTM DEM elevation queries, and side-by-side Generative AI model comparisons.
 
+### ⚡ One-Click Startup Script (Easiest)
+We have provided startup scripts that install requirements, launch the FastAPI and React servers, and automatically open the React application directly in your browser:
+- **Windows**: Double-click **`run_project.bat`** (or run `./run_project.bat` in your terminal).
+- **macOS / Linux**: Run **`./run_project.sh`** in your terminal.
+
+---
+
+### Manual Launch (Alternative)
+
 ### 1. Start the FastAPI AI Backend
 The PyTorch models are loaded in memory via an asynchronous FastAPI REST server.
 ```bash
